@@ -174,20 +174,20 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         }
         
-        if (userAccount == null) {
-        // Find CustomerEnterprise
-        for (Network network : system.getNetworkList()) {
-            for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
-                if (enterprise instanceof CustomerEnterprise) {
-                    userAccount = enterprise.getUserAccountDirectory().authenticateUser(userName, password);
-                    if (userAccount != null) {
-                        inEnterprise = enterprise;
-                        break;
-                    }
-                }
-            }
-        }
-    }
+//        if (userAccount == null) {
+//        // Find CustomerEnterprise
+//        for (Network network : system.getNetworkList()) {
+//            for (Enterprise enterprise : network.getEnterpriseDirectory().getEnterpriseList()) {
+//                if (enterprise instanceof CustomerEnterprise) {
+//                    userAccount = enterprise.getUserAccountDirectory().authenticateUser(userName, password);
+//                    if (userAccount != null) {
+//                        inEnterprise = enterprise;
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
         
         if(userAccount==null){
             JOptionPane.showMessageDialog(null, "Invalid credentials");

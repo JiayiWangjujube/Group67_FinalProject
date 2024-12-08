@@ -8,7 +8,7 @@ import Business.UserAccount.UserAccount;
 
 /**
  *
- * @author raunak
+ * @author yutingbai
  */
 public class HelpWorkRequest extends WorkRequest{
     

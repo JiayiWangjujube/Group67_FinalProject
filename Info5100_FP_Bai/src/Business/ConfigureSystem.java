@@ -12,7 +12,9 @@ import Business.Network.Network;
 import Business.Organization.CustomerOrganization;
 import Business.Organization.Organization;
 import Business.Role.CustomerRole;
+import Business.Role.OrganizerRole;
 import Business.Role.SystemAdminRole;
+import Business.Role.TicketingAgentRole;
 import Business.UserAccount.UserAccount;
 
 /**
@@ -58,17 +60,19 @@ public class ConfigureSystem {
 
         UserAccount ua = system.getUserAccountDirectory().createUserAccount("1", "1", employee, new SystemAdminRole());
         UserAccount customer = system.getUserAccountDirectory().createUserAccount("c", "c", employee, new CustomerRole());
+        UserAccount og = system.getUserAccountDirectory().createUserAccount("o", "o", employee, new OrganizerRole());
+        UserAccount ta = system.getUserAccountDirectory().createUserAccount("t", "t", employee, new TicketingAgentRole());
 
-        CustomerEnterprise customerEnterprise = new CustomerEnterprise("Customer Enterprise");
-        system.getNetworkList().get(0).getEnterpriseDirectory().getEnterpriseList().add(customerEnterprise);
+//        CustomerEnterprise customerEnterprise = new CustomerEnterprise("Customer Enterprise");
+//        system.getNetworkList().get(0).getEnterpriseDirectory().getEnterpriseList().add(customerEnterprise);
         
-        // 创建 CustomerServiceOrganization 并添加到 CustomerEnterprise
-        CustomerOrganization customerOrganization = new CustomerOrganization();
-        customerEnterprise.getOrganizationDirectory().getOrganizationList().add(customerOrganization);
-        
-        // 创建 Customer 用户并添加到 CustomerServiceOrganization
-        Employee customerEmployee = system.getEmployeeDirectory().createEmployee("Customer");
-        customerOrganization.getUserAccountDirectory().createUserAccount("c", "c", customerEmployee, new CustomerRole());
+//        // 创建 CustomerOrganization 并添加到 CustomerEnterprise
+//        CustomerOrganization customerOrganization = new CustomerOrganization();
+//        customerEnterprise.getOrganizationDirectory().getOrganizationList().add(customerOrganization);
+//        
+//        // 创建 Customer 用户并添加到 CustomerServiceOrganization
+//        Employee customerEmployee = system.getEmployeeDirectory().createEmployee("Customer");
+//        customerOrganization.getUserAccountDirectory().createUserAccount("c", "c", customerEmployee, new CustomerRole());
 
         return system;
     }

@@ -11,6 +11,7 @@ import Business.Organization.Organization;
 import Business.UserAccount.UserAccount;
 import Business.WorkQueue.HelpWorkRequest;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -114,9 +115,9 @@ public class RequestHelpJPanel extends javax.swing.JPanel {
         request.setStatus("Sent");
         
         Organization org = null;
-        if (enterprise == null) {
-         enterprise = EcoSystem.getInstance().getCustomerEnterprise();
-        }
+//        if (enterprise == null) {
+//         enterprise = EcoSystem.getInstance().getCustomerEnterprise();
+//        }
         for (Organization organization : enterprise.getOrganizationDirectory().getOrganizationList()){
             if (organization instanceof CustomerServiceOrganization){
                 org = organization;
@@ -127,6 +128,7 @@ public class RequestHelpJPanel extends javax.swing.JPanel {
             org.getWorkQueue().getWorkRequestList().add(request);
             userAccount.getWorkQueue().getWorkRequestList().add(request);
         }
+        JOptionPane.showMessageDialog(null, "Request help successfully!");
         
 
     }//GEN-LAST:event_requestTestJButtonActionPerformed

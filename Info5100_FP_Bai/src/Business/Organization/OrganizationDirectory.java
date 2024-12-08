@@ -43,7 +43,11 @@ public class OrganizationDirectory {
     } else if (type.getValue().equals(Organization.Type.MerchandiseRetail.getValue())) {
         organization = new MerchandiseRetailOrganization();
         organizationList.add(organization);
-    } else {
+    } else if (type.getValue().equals(Organization.Type.CustomerOrganization.getValue())) {
+        organization = new CustomerOrganization();
+        organizationList.add(organization);
+    }
+    else {
         System.out.println("No matching organization type found for: " + type.getValue());
     }
 

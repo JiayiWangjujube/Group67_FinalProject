@@ -42,7 +42,10 @@ public class EnterpriseDirectory {
         } else if (type==Enterprise.EnterpriseType.Ticketing) {
             enterprise=new TicketingEnterprise(name);
             enterpriseList.add(enterprise);
-        } 
+        } else if (type==Enterprise.EnterpriseType.Customer) {
+            enterprise=new CustomerEnterprise(name);
+            enterpriseList.add(enterprise);
+        }
         return enterprise;
     }
 }

@@ -7,6 +7,7 @@ package Business;
 
 import Business.Enterprise.CustomerEnterprise;
 import Business.Network.Network;
+import Business.Organization.CustomerOrganization;
 import Business.Organization.Organization;
 import Business.Role.Role;
 import Business.Role.SystemAdminRole;
@@ -20,7 +21,7 @@ public class EcoSystem extends Organization{
     
     private static EcoSystem business;
     private ArrayList<Network> networkList;
-    private CustomerEnterprise customerEnterprise;
+    //private CustomerEnterprise customerEnterprise;
     public static EcoSystem getInstance(){
         if(business==null){
             business=new EcoSystem();
@@ -62,11 +63,22 @@ public class EcoSystem extends Organization{
         return true;
     }
     
-    public CustomerEnterprise getCustomerEnterprise() {
-        return customerEnterprise;
-    }
-
-    public void setCustomerEnterprise(CustomerEnterprise customerEnterprise) {
-        this.customerEnterprise = customerEnterprise;
-    }
+//    public CustomerEnterprise getCustomerEnterprise() {
+//        return customerEnterprise;
+//    }
+//
+//    public void setCustomerEnterprise(CustomerEnterprise customerEnterprise) {
+//        this.customerEnterprise = customerEnterprise;
+//    }
+//    
+//    
+//    private void initializeCustomerEnterprise() {
+//        customerEnterprise = new CustomerEnterprise("Default Customer Enterprise");
+//
+//        
+//        CustomerOrganization customerOrganization = new CustomerOrganization();
+//        customerEnterprise.getOrganizationDirectory().getOrganizationList().add(customerOrganization);
+//
+//    }
+//    
 }

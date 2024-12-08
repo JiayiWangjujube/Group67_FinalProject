@@ -253,11 +253,6 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
         
     }//GEN-LAST:event_btnAddToCartActionPerformed
 
-    private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_cmbTypeActionPerformed
-
     private void btnModifyQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyQuantityActionPerformed
         // TODO add your handling code here:
 
@@ -271,6 +266,11 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.previous(userProcessContainer);
     }//GEN-LAST:event_backJButtonActionPerformed
+
+    private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cmbTypeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

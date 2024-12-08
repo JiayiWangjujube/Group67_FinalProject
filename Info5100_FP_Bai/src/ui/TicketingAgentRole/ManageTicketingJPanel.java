@@ -4,7 +4,10 @@
  */
 package ui.TicketingAgentRole;
 
+import Business.UserAccount.UserAccount;
 import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
@@ -15,13 +18,22 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ManageTicketingJPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
+    private UserAccount userAccount; 
+    public static List<Object[]> workRequestQueue = new ArrayList<>();
 
     /**
      * Creates new form ManageTicketingJPanel
      */
-    public ManageTicketingJPanel(JPanel userProcessContainer) {
+    public ManageTicketingJPanel(JPanel userProcessContainer, UserAccount userAccount) {
         initComponents();
         this.userProcessContainer = userProcessContainer;
+        this.userAccount = userAccount;
+        
+       // tableData = new ArrayList<>();
+        //tableData.add(new Object[]{"Concert A", "Organizer 1", "", "Pending", ""});
+        //tableData.add(new Object[]{"Concert B", "Organizer 2", "", "Pending", ""});
+        //tableData.add(new Object[]{"Concert C", "Organizer 3", "", "Pending", ""});
+
         populateTable();
         setupComponents();
     }
@@ -33,6 +45,17 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
         refreshJButton1.addActionListener(evt -> refreshJButton1ActionPerformed(evt));
     }
     
+     
+     public static void addWorkRequest(Object[] workRequest) {
+        if (workRequest.length < 8) { // 检查数组长度是否小于 8
+            Object[] fullRequest = new Object[8];
+            System.arraycopy(workRequest, 0, fullRequest, 0, workRequest.length); // 扩展长度
+            workRequestQueue.add(fullRequest);
+        } else {
+            workRequestQueue.add(workRequest); // 长度足够直接添加
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -56,20 +79,20 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
 
         workRequestJTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Performance Name", "Sender", "Receiver", "Status", "Remark"
+                "Event Name", "Sender", "Receiver", "Status", "Remark", "Suggested Price", "Actual Price", "Category"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, true, false, true
+                false, true, true, false, true, true, true, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -121,10 +144,6 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
                 .addComponent(assignJButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(processJButton1)
-                .addGap(150, 150, 150))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 717, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -133,18 +152,22 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnBack)
-                .addGap(183, 183, 183)
+                .addGap(248, 248, 248)
                 .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 864, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap(47, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBack)
                     .addComponent(jLabel1))
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                 .addComponent(refreshJButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -152,7 +175,7 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(assignJButton1)
                     .addComponent(processJButton1))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         add(jPanel1, "card6");
@@ -167,8 +190,19 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
             return;
         }
 
-        DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
-        model.setValueAt("Assigned to me", selectedRow, 3);
+         DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
+        Object[] row = workRequestQueue.get(selectedRow);
+
+
+        if (row[2] != null && !row[2].toString().isEmpty()) { // 检查是否已被分配
+            JOptionPane.showMessageDialog(null, "This request is already assigned.");
+            return;
+        }
+        row[2] = "Assigned to me"; // Receiver列
+        row[3] = "Pending";  
+        
+         JOptionPane.showMessageDialog(this, "Request assigned successfully!");
+        
         populateTable();
     }//GEN-LAST:event_assignJButton1ActionPerformed
 
@@ -181,13 +215,17 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
             return;
         }
 
-        String status = (String) workRequestJTable1.getValueAt(selectedRow, 3);
-        if (!"Assigned to me".equals(status)) {
+        DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
+        Object[] row = workRequestQueue.get(selectedRow);
+        String status = (String) row[3];
+        
+        
+        if (!"Pending".equals(status)) {
             JOptionPane.showMessageDialog(null, "Only assigned requests can be processed.");
             return;
             }
 
-        ProcessTicketCheckJPanel processPanel = new ProcessTicketCheckJPanel(userProcessContainer, selectedRow, (DefaultTableModel) workRequestJTable1.getModel());
+        ProcessTicketCheckJPanel processPanel = new ProcessTicketCheckJPanel(userProcessContainer, selectedRow, workRequestQueue);
         userProcessContainer.add("ProcessTicketCheckJPanel", processPanel);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);
@@ -207,17 +245,20 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
     private void populateTable() {
             DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
             model.setRowCount(0);
-
-            Object[][] data = {
-                 {"Concert A", "Organizer 1", "", "Pending", ""},
-                 {"Concert B", "Organizer 2", "", "Pending", ""},
-                 {"Concert C", "Organizer 3", "", "Pending", ""}
-            };
-
-        for (Object[] row : data) {
-            model.addRow(row);
+            
+         for (Object[] row : workRequestQueue) {
+             System.out.println("Populating row: " + java.util.Arrays.toString(row)); // 调试输出
+            // 显示该用户相关的请求
+            if (row[2] == null || row[2].equals(userAccount.getUsername())) {
+                model.addRow(row);
+            }
         }
     }
+    
+    public void refreshTable() {
+    populateTable(); 
+}
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton assignJButton1;

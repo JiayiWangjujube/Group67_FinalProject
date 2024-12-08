@@ -4,43 +4,41 @@
  */
 package ui.Organizer;
 
+import Business.EcoSystem;
 import Business.Enterprise.Enterprise;
-import Business.Organization.ConcertPlanningOrganization;
+import Business.Enterprise.OrganizerEnterprise;
 import Business.Organization.Organization;
 import Business.Role.OrganizerRole;
 import Business.UserAccount.UserAccount;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import Business.Organization.ConcertPlanningOrganization;
 
 /**
  *
  * @author zhangdi
  */
 public class OrganizerWorkAreaJPanel extends javax.swing.JPanel {
-
     private JPanel userProcessContainer;
-    private UserAccount account;
-    private Organization organization;
-    private Enterprise enterprise;
+    private OrganizerEnterprise enterprise;
+    private UserAccount userAccount;
+    private ConcertPlanningOrganization organization;
     private OrganizerRole organizerRole;
-
-    private JTable eventTable;
-    private DefaultTableModel tableModel;
-    
     
     /**
-     * Creates new form DoctorWorkAreaJPanel
+     * Creates new form OrganizerWorkAreaJPanel
      */
-    public OrganizerWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, Organization organization, Enterprise enterprise) {
-        initComponents();
-        
+
+    public OrganizerWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, ConcertPlanningOrganization org, OrganizerEnterprise enterprise, EcoSystem business) {
         this.userProcessContainer = userProcessContainer;
-        this.account = account;
-        this.organization = organization;
         this.enterprise = enterprise;
-        this.organizerRole = organizerRole;
+        this.organization = org;
+        this.userAccount = account;
         
+        initComponents();
+ 
     }
 
     /**
@@ -52,25 +50,17 @@ public class OrganizerWorkAreaJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnEventMgt = new javax.swing.JButton();
-        btnTicketingTracking = new javax.swing.JButton();
-        btnContractMgt = new javax.swing.JButton();
-        btnRevenueSum = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        btnEventMgt = new javax.swing.JButton();
+        btnRevenueSum = new javax.swing.JButton();
+
+        jLabel1.setFont(new java.awt.Font("Microsoft YaHei UI", 0, 14)); // NOI18N
+        jLabel1.setText("Organizer Work Area");
 
         btnEventMgt.setText("Event Management");
         btnEventMgt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEventMgtActionPerformed(evt);
-            }
-        });
-
-        btnTicketingTracking.setText("Ticket Tracking");
-
-        btnContractMgt.setText("Contract Management");
-        btnContractMgt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnContractMgtActionPerformed(evt);
             }
         });
 
@@ -81,60 +71,55 @@ public class OrganizerWorkAreaJPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Microsoft YaHei UI", 0, 14)); // NOI18N
-        jLabel1.setText("Organizer Work Area");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(226, 226, 226)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnRevenueSum)
-                    .addComponent(btnContractMgt)
-                    .addComponent(btnTicketingTracking)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnEventMgt)
-                        .addComponent(jLabel1)))
-                .addContainerGap(261, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(79, 79, 79)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(78, 78, 78)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnRevenueSum, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEventMgt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(407, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(97, 97, 97)
+                .addGap(76, 76, 76)
                 .addComponent(jLabel1)
-                .addGap(39, 39, 39)
+                .addGap(60, 60, 60)
                 .addComponent(btnEventMgt)
-                .addGap(42, 42, 42)
-                .addComponent(btnContractMgt)
-                .addGap(38, 38, 38)
-                .addComponent(btnTicketingTracking)
-                .addGap(44, 44, 44)
+                .addGap(32, 32, 32)
                 .addComponent(btnRevenueSum)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(220, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEventMgtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventMgtActionPerformed
         // TODO add your handling code here:
-
+        EventManagementJPanel emjp = new EventManagementJPanel(userProcessContainer, userAccount, enterprise, organization);
+        userProcessContainer.add("EventManagementJPanel", emjp);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    
     }//GEN-LAST:event_btnEventMgtActionPerformed
-
-    private void btnContractMgtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContractMgtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnContractMgtActionPerformed
 
     private void btnRevenueSumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRevenueSumActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnRevenueSumActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnContractMgt;
     private javax.swing.JButton btnEventMgt;
     private javax.swing.JButton btnRevenueSum;
-    private javax.swing.JButton btnTicketingTracking;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+
+
 }
