@@ -4,10 +4,12 @@
  */
 package ui.CustomerService;
 
+import Business.EcoSystem;
 import Business.Enterprise.Enterprise;
 import Business.Organization.CustomerServiceOrganization;
 import Business.Organization.Organization;
 import Business.UserAccount.UserAccount;
+import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 /**
@@ -20,6 +22,7 @@ public class CustomerServiceWorkAreaJPanel extends javax.swing.JPanel {
     private UserAccount account;
     private Organization organization;
     private Enterprise enterprise;
+    private EcoSystem business;
     /**
      * Creates new form CustomerServiceWorkAreaJPanel
      */
@@ -46,7 +49,7 @@ public class CustomerServiceWorkAreaJPanel extends javax.swing.JPanel {
 
         jLabel1.setText("Customer Service");
 
-        jButton1.setText("Ticket refund");
+        jButton1.setText("Ticket Refund");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -64,8 +67,8 @@ public class CustomerServiceWorkAreaJPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(267, 267, 267)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(298, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
                     .addGroup(layout.createSequentialGroup()
@@ -73,27 +76,35 @@ public class CustomerServiceWorkAreaJPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1)
                             .addComponent(jButton1))))
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addGap(249, 249, 249))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
+                .addGap(154, 154, 154)
                 .addComponent(jLabel1)
                 .addGap(46, 46, 46)
                 .addComponent(jButton1)
                 .addGap(41, 41, 41)
                 .addComponent(jButton2)
-                .addContainerGap(227, Short.MAX_VALUE))
+                .addContainerGap(203, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        ManageTicekRefundJPanel manageRefundPanel = new ManageTicekRefundJPanel(userProcessContainer);
+        userProcessContainer.add("ManageTicketRefundJPanel", manageRefundPanel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        ManagecomplaintsJPanel manageComplaintsPanel = new ManagecomplaintsJPanel(userProcessContainer, account, organization, business);
+        userProcessContainer.add("ManageComplaintsJPanel", manageComplaintsPanel);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
     }//GEN-LAST:event_jButton2ActionPerformed
 
 

@@ -19,7 +19,7 @@ public class CustomerEnterprise extends Enterprise {
     }
     @Override
     public ArrayList<Role> getSupportedRole() {
-        return null;
+        return new ArrayList<>();
     }
 }
 

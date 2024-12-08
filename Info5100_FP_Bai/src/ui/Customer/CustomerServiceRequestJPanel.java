@@ -6,6 +6,7 @@ package ui.Customer;
 
 import Business.Enterprise.Enterprise;
 import Business.Organization.CustomerServiceOrganization;
+import Business.Organization.Organization;
 import Business.UserAccount.UserAccount;
 import Business.WorkQueue.HelpWorkRequest;
 import Business.WorkQueue.WorkRequest;
@@ -20,13 +21,13 @@ import javax.swing.table.DefaultTableModel;
 public class CustomerServiceRequestJPanel extends javax.swing.JPanel {
 
     private JPanel userProcessContainer;
-    private CustomerServiceOrganization organization;
+    private Organization organization;
     private Enterprise enterprise;
     private UserAccount customer;
     /**
      * Creates new form CustomerServiceRequestJPanel
      */
-    public CustomerServiceRequestJPanel(JPanel userProcessContainer, Enterprise enterprise, UserAccount customer, CustomerServiceOrganization organization) {
+    public CustomerServiceRequestJPanel(JPanel userProcessContainer, Enterprise enterprise, UserAccount customer, Organization organization) {
         initComponents();
         this.userProcessContainer = userProcessContainer;
         this.enterprise = enterprise;
@@ -155,7 +156,7 @@ public class CustomerServiceRequestJPanel extends javax.swing.JPanel {
 
     private void refreshTestJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshTestJButtonActionPerformed
 
-       
+       populateRequestTable();
 
     }//GEN-LAST:event_refreshTestJButtonActionPerformed
 

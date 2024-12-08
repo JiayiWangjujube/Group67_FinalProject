@@ -5,11 +5,17 @@
 package ui.Customer;
 
 import Business.Enterprise.Enterprise;
+import Business.Organization.CustomerOrganization;
 import Business.Organization.CustomerServiceOrganization;
+import Business.Organization.Organization;
 import Business.Organization.TicketingOperationsOrganization;
 import Business.UserAccount.UserAccount;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import model.Business;
+import model.MasterOrderList;
+import model.SupplierDirectory;
 import ui.Administrator.ManageOrganizationJPanel;
 
 /**
@@ -23,15 +29,22 @@ public class CustomerWorkAreaJPanel extends javax.swing.JPanel {
     UserAccount customer;
     TicketingOperationsOrganization ticketingOrg;
     CustomerServiceOrganization cso;
+    Organization organization;
+    SupplierDirectory supplierDirectory;
+    MasterOrderList masterOrderList;
+    Business business;
     /**
      * Creates new form CustomerWorkAreaJPanel
      */
-    public CustomerWorkAreaJPanel(JPanel userProcessContainer, Enterprise enterprise, UserAccount customer, CustomerServiceOrganization cso) {
+    public CustomerWorkAreaJPanel(JPanel userProcessContainer, Enterprise enterprise, UserAccount customer, Organization organization) {
         initComponents();
         this.userProcessContainer = userProcessContainer;
         this.enterprise = enterprise;
         this.customer = customer;
-        this.cso = cso;
+        this.organization = organization;
+        this.supplierDirectory = supplierDirectory;
+        this.masterOrderList = masterOrderList;
+        //this.cso = cso;
     }
 
     /**
@@ -47,6 +60,7 @@ public class CustomerWorkAreaJPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel1.setText("Customer Role");
@@ -72,6 +86,13 @@ public class CustomerWorkAreaJPanel extends javax.swing.JPanel {
             }
         });
 
+        jButton4.setText("Buy Products");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -82,11 +103,12 @@ public class CustomerWorkAreaJPanel extends javax.swing.JPanel {
                         .addGap(242, 242, 242)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(256, 256, 256)
+                        .addGap(257, 257, 257)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(253, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -94,19 +116,21 @@ public class CustomerWorkAreaJPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(93, 93, 93)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addGap(41, 41, 41)
                 .addComponent(jButton2)
-                .addGap(30, 30, 30)
-                .addComponent(jButton3)
+                .addGap(28, 28, 28)
+                .addComponent(jButton4)
                 .addGap(31, 31, 31)
+                .addComponent(jButton3)
+                .addGap(27, 27, 27)
                 .addComponent(jButton1)
-                .addGap(158, 158, 158))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        CustomerServiceRequestJPanel csrjp = new CustomerServiceRequestJPanel(userProcessContainer, enterprise, customer, cso);
+        CustomerServiceRequestJPanel csrjp = new CustomerServiceRequestJPanel(userProcessContainer, enterprise, customer, organization);
         userProcessContainer.add("CustomerServiceRequestJPanel", csrjp);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);
@@ -128,11 +152,21 @@ public class CustomerWorkAreaJPanel extends javax.swing.JPanel {
         layout.next(userProcessContainer);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        
+        BuyProductJPanel bpjp = new BuyProductJPanel(userProcessContainer, enterprise, customer, organization);
+        userProcessContainer.add("BuyProductJPanel", bpjp);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.next(userProcessContainer);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

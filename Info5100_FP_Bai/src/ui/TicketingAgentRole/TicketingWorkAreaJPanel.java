@@ -105,7 +105,7 @@ public class TicketingWorkAreaJPanel extends javax.swing.JPanel {
 
     private void btnManageTicketingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManageTicketingActionPerformed
         // TODO add your handling code here:
-        ManageTicketingJPanel manageTicketingPanel = new ManageTicketingJPanel(userProcessContainer);
+        ManageTicketingJPanel manageTicketingPanel = new ManageTicketingJPanel(userProcessContainer,account);
         userProcessContainer.add("ManageTicketingJPanel", manageTicketingPanel);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);
