@@ -34,7 +34,7 @@ public class EventManagementJPanel extends javax.swing.JPanel {
     private OrganizerEnterprise enterprise;
     private Organization organization;
     private UserAccount useraccount;
-    private List<Event> eventList = new ArrayList<>();
+    public static ArrayList<Event> eventList = new ArrayList<>();
 
     /**
      * Creates new form EventManagementJPanel
