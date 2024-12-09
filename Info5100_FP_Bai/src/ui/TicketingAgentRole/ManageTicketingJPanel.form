@@ -29,8 +29,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="145" max="-2" attributes="0"/>
                   <Component id="assignJButton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="121" max="-2" attributes="0"/>
                   <Component id="processJButton1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="139" max="-2" attributes="0"/>
+                  <Component id="btnAddtoList" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
@@ -68,6 +70,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="assignJButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="processJButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnAddtoList" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="43" max="32767" attributes="0"/>
               </Group>
@@ -183,6 +186,14 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Manage Performance"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnAddtoList">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Add to List"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddtoListActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

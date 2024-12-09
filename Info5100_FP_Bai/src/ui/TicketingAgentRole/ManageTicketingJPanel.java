@@ -5,12 +5,15 @@
 package ui.TicketingAgentRole;
 
 import Business.UserAccount.UserAccount;
+import Model.Event;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import ui.Organizer.EventManagementJPanel;
 
 /**
  *
@@ -54,6 +57,7 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
         } else {
             workRequestQueue.add(workRequest); // 长度足够直接添加
         }
+         System.out.println("Added work request: " + java.util.Arrays.toString(workRequest));
     }
 
 
@@ -74,6 +78,7 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
         refreshJButton1 = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        btnAddtoList = new javax.swing.JButton();
 
         setLayout(new java.awt.CardLayout());
 
@@ -135,6 +140,13 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
 
         jLabel1.setText("Manage Performance");
 
+        btnAddtoList.setText("Add to List");
+        btnAddtoList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddtoListActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -142,8 +154,10 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(145, 145, 145)
                 .addComponent(assignJButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(121, 121, 121)
                 .addComponent(processJButton1)
+                .addGap(139, 139, 139)
+                .addComponent(btnAddtoList)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -174,7 +188,8 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
                 .addGap(58, 58, 58)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(assignJButton1)
-                    .addComponent(processJButton1))
+                    .addComponent(processJButton1)
+                    .addComponent(btnAddtoList))
                 .addContainerGap(43, Short.MAX_VALUE))
         );
 
@@ -215,7 +230,7 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
             return;
         }
 
-        DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
+        //DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
         Object[] row = workRequestQueue.get(selectedRow);
         String status = (String) row[3];
         
@@ -242,6 +257,79 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
          CardLayout layout = (CardLayout) userProcessContainer.getLayout();
          layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnAddtoListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddtoListActionPerformed
+        // TODO add your handling code here:
+         int selectedRow = workRequestJTable1.getSelectedRow();
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(this, "Please select a row.", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    //DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
+    Object[] row = workRequestQueue.get(selectedRow);
+
+    String status = (String) row[3]; // 获取状态列
+    
+    System.out.println("Selected status: '" + status + "'");
+    if (!"Approve".equalsIgnoreCase(status.trim())) {
+        JOptionPane.showMessageDialog(this, "Only Approved requests can be added.", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    String eventName = (String) row[0];
+    String category = (String) row[7];
+    String actualPrice = (String) row[6];
+
+    // 从 EventManagementJPanel 中查找匹配的条目
+    Event matchingEvent = null;
+    for (Event e : EventManagementJPanel.eventList) {
+        if (eventName.equals(e.getEventName())) {
+            matchingEvent = e;
+            break;
+        }
+    }
+
+    if (matchingEvent == null) {
+        JOptionPane.showMessageDialog(this, "Matching event not found in Event Management.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 创建新行数据
+    Object[] newRow = new Object[]{
+        eventName,
+        matchingEvent.getEventDate(),
+        matchingEvent.getEventTime(),
+        matchingEvent.getVenue(),
+        actualPrice,
+        "" // Sales 可留空或设置初始值
+    };
+    
+    System.out.println("Adding row to TicketInformation: " + java.util.Arrays.toString(newRow));
+
+   try {
+    // 确保 TicketInformation 已正确添加到 userProcessContainer
+    TicketInformation ticketInfoPanel = null;
+    for (Component comp : userProcessContainer.getComponents()) {
+        if (comp instanceof TicketInformation) {
+            ticketInfoPanel = (TicketInformation) comp;
+            break;
+        }
+    }
+
+    if (ticketInfoPanel == null) {
+        JOptionPane.showMessageDialog(this, "Ticket Information panel not found.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 调用 addEventToCategory 方法
+    ticketInfoPanel.addEventToCategory(category, newRow);
+    JOptionPane.showMessageDialog(this, "Event added to Ticket Information.", "Success", JOptionPane.INFORMATION_MESSAGE);
+} catch (Exception e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(this, "Error updating Ticket Information panel.", "Error", JOptionPane.ERROR_MESSAGE);
+}
+    }//GEN-LAST:event_btnAddtoListActionPerformed
     private void populateTable() {
             DefaultTableModel model = (DefaultTableModel) workRequestJTable1.getModel();
             model.setRowCount(0);
@@ -262,6 +350,7 @@ public class ManageTicketingJPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton assignJButton1;
+    private javax.swing.JButton btnAddtoList;
     private javax.swing.JButton btnBack;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

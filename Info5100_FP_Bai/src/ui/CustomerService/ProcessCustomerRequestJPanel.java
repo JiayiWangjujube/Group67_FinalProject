@@ -6,6 +6,7 @@ package ui.CustomerService;
 
 
 import Business.WorkQueue.HelpWorkRequest;
+import Business.WorkQueue.WorkRequest;
 import java.awt.CardLayout;
 import java.awt.Component;
 import javax.swing.JOptionPane;
@@ -19,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
 public class ProcessCustomerRequestJPanel extends javax.swing.JPanel {
 
     JPanel userProcessContainer;
-    HelpWorkRequest request;
+    WorkRequest request;
     private int selectedRow;
     private DefaultTableModel model;
     
@@ -27,7 +28,7 @@ public class ProcessCustomerRequestJPanel extends javax.swing.JPanel {
     /**
      * Creates new form ProcessWorkRequestJPanel
      */
-    public ProcessCustomerRequestJPanel(JPanel userProcessContainer, HelpWorkRequest request) {
+    public ProcessCustomerRequestJPanel(JPanel userProcessContainer, WorkRequest request) {
         initComponents();
         this.userProcessContainer = userProcessContainer;
         this.request = request;
