@@ -21,6 +21,8 @@ public abstract class WorkRequest {
     private Date resolveDate;
     private String category;
     private String remark;
+    private String eventName;
+    private String result;
     
     public WorkRequest(){
         requestDate = new Date();
@@ -88,6 +90,22 @@ public abstract class WorkRequest {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
     
     

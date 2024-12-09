@@ -9,6 +9,8 @@ import Business.Organization.OrganizationDirectory;
 import Business.Organization.TicketingOperationsOrganization;
 import Business.UserAccount.UserAccount;
 import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,16 +23,55 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Enterprise enterprise;
     private UserAccount customer;
+    private static List<Object[]> checkedOutItems = new ArrayList<>();
+
+
 
     public BuyTicketJPanel(JPanel userProcessContainer, Enterprise enterprise, UserAccount customer) {
         this.userProcessContainer = userProcessContainer;
         this.enterprise = enterprise;
         this.customer = customer;
         initComponents();
-        populateCatalogTable();
+        setupComponents();
     }
 
+    public static void addCheckedOutItem(Object[] item) {
+    checkedOutItems.add(item);
+}
+
+public static List<Object[]> getCheckedOutItems() {
+    return checkedOutItems;
+}
+    private void setupComponents() {
+    // 初始化类型下拉框
+    cmbType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Concert", "Movie", "Theater"}));
     
+    // 添加监听事件，当用户选择类型时更新表格
+    cmbType.addActionListener(evt -> updateTableByType());
+}
+
+// 初始化表格假数据
+private void updateTableByType() {
+    String selectedType = (String) cmbType.getSelectedItem();
+    DefaultTableModel model = (DefaultTableModel) tblTicketCatalog.getModel();
+    
+    // 清空表格
+    model.setRowCount(0);
+    
+    // 根据类型填充假数据
+    if ("Concert".equals(selectedType)) {
+        model.addRow(new Object[]{"Coldplay Live", 150, "Available"});
+        model.addRow(new Object[]{"Rock Festival", 100, "Available"});
+    } else if ("Movie".equals(selectedType)) {
+        model.addRow(new Object[]{"Inception", 10, "Available"});
+        model.addRow(new Object[]{"Interstellar", 12, "Sold Out"});
+    } else if ("Theater".equals(selectedType)) {
+        model.addRow(new Object[]{"Hamilton", 200, "Available"});
+        model.addRow(new Object[]{"Phantom of the Opera", 180, "Available"});
+    }
+}
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -41,29 +82,15 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnRemoveOrderItem = new javax.swing.JButton();
         lblQuantity = new javax.swing.JLabel();
         btnCheckOut = new javax.swing.JButton();
         spnQuantity = new javax.swing.JSpinner();
         lblType = new javax.swing.JLabel();
-        btnAddToCart = new javax.swing.JButton();
         cmbType = new javax.swing.JComboBox();
-        lblItemsInCart = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblCart = new javax.swing.JTable();
         lblCatalog = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblProductCatalog = new javax.swing.JTable();
-        txtNewQuantity = new javax.swing.JTextField();
-        btnModifyQuantity = new javax.swing.JButton();
+        tblTicketCatalog = new javax.swing.JTable();
         backJButton = new javax.swing.JButton();
-
-        btnRemoveOrderItem.setText("Remove");
-        btnRemoveOrderItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRemoveOrderItemActionPerformed(evt);
-            }
-        });
 
         lblQuantity.setText("Quantity:");
 
@@ -79,46 +106,16 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
 
         lblType.setText("Type:");
 
-        btnAddToCart.setText("Add to Cart");
-        btnAddToCart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddToCartActionPerformed(evt);
-            }
-        });
-
         cmbType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmbTypeActionPerformed(evt);
             }
         });
 
-        lblItemsInCart.setText("Items in cart:");
-
-        tblCart.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Item Name", "Price", "Quantity", "Total Amount"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(tblCart);
-
         lblCatalog.setText("Catalog:");
 
-        tblProductCatalog.setFont(new java.awt.Font("Lucida Grande", 0, 13)); // NOI18N
-        tblProductCatalog.setModel(new javax.swing.table.DefaultTableModel(
+        tblTicketCatalog.setFont(new java.awt.Font("Lucida Grande", 0, 13)); // NOI18N
+        tblTicketCatalog.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -137,14 +134,7 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblProductCatalog);
-
-        btnModifyQuantity.setText("Modify Quantity");
-        btnModifyQuantity.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModifyQuantityActionPerformed(evt);
-            }
-        });
+        jScrollPane1.setViewportView(tblTicketCatalog);
 
         backJButton.setText("<< Back");
         backJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -159,17 +149,10 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnRemoveOrderItem)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblQuantity)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnAddToCart, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                        .addGap(353, 353, 353))))
+                .addComponent(lblQuantity)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(backJButton)
@@ -177,21 +160,15 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
                 .addComponent(lblType, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmbType, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 211, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(33, 33, 33)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(btnCheckOut, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblCatalog)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
-                            .addComponent(lblItemsInCart)
-                            .addComponent(jScrollPane2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnModifyQuantity)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtNewQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 590, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap(33, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
@@ -209,56 +186,48 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
                 .addGap(157, 157, 157)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblQuantity)
-                    .addComponent(spnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddToCart))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
-                .addComponent(btnRemoveOrderItem)
-                .addGap(16, 16, 16))
+                    .addComponent(spnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(221, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(49, 49, 49)
                     .addComponent(lblCatalog)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(59, 59, 59)
-                    .addComponent(lblItemsInCart)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnModifyQuantity)
-                        .addComponent(txtNewQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGap(233, 233, 233)
                     .addComponent(btnCheckOut)
                     .addContainerGap(17, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnRemoveOrderItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveOrderItemActionPerformed
-
-        
-
-    }//GEN-LAST:event_btnRemoveOrderItemActionPerformed
-
     private void btnCheckOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckOutActionPerformed
         // TODO add your handling code here:
+int selectedRow = tblTicketCatalog.getSelectedRow();
+    if (selectedRow < 0) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Please select an item to check out.");
+        return;
+    }
 
+    int quantity = (int) spnQuantity.getValue();
+    if (quantity <= 0) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Quantity must be greater than 0.");
+        return;
+    }
+
+    String name = (String) tblTicketCatalog.getValueAt(selectedRow, 0);
+    double price = ((Number) tblTicketCatalog.getValueAt(selectedRow, 1)).doubleValue();
+
+    // 添加到已结算列表
+    Object[] checkedOutItem = {name, price, quantity, price * quantity};
+    BuyTicketJPanel.addCheckedOutItem(checkedOutItem);
+
+    javax.swing.JOptionPane.showMessageDialog(this, 
+        "Added " + quantity + " of " + name + " to your list.");
+
+    
         
 
     }//GEN-LAST:event_btnCheckOutActionPerformed
-
-    private void btnAddToCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddToCartActionPerformed
-        // TODO add your handling code here:
-
-        
-    }//GEN-LAST:event_btnAddToCartActionPerformed
-
-    private void btnModifyQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyQuantityActionPerformed
-        // TODO add your handling code here:
-
-        
-
-    }//GEN-LAST:event_btnModifyQuantityActionPerformed
 
     private void backJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backJButtonActionPerformed
 
@@ -269,42 +238,34 @@ public class BuyTicketJPanel extends javax.swing.JPanel {
 
     private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
         // TODO add your handling code here:
-
     }//GEN-LAST:event_cmbTypeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backJButton;
-    private javax.swing.JButton btnAddToCart;
     private javax.swing.JButton btnCheckOut;
-    private javax.swing.JButton btnModifyQuantity;
-    private javax.swing.JButton btnRemoveOrderItem;
     private javax.swing.JComboBox cmbType;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblCatalog;
-    private javax.swing.JLabel lblItemsInCart;
     private javax.swing.JLabel lblQuantity;
     private javax.swing.JLabel lblType;
     private javax.swing.JSpinner spnQuantity;
-    private javax.swing.JTable tblCart;
-    private javax.swing.JTable tblProductCatalog;
-    private javax.swing.JTextField txtNewQuantity;
+    private javax.swing.JTable tblTicketCatalog;
     // End of variables declaration//GEN-END:variables
 
-private void populateCatalogTable() {
-    DefaultTableModel model = (DefaultTableModel) tblProductCatalog.getModel(); // 假设表格变量为 catalogTable
-    model.setRowCount(0); // 清空表格
-
-    // 示例数据
-    Object[][] data = {
-        {"Item 1", 10.0, 100},
-        {"Item 2", 20.0, 50},
-        {"Item 3", 15.5, 30}
-    };
-
-    for (Object[] row : data) {
-        model.addRow(row);
-    }
-}
+//private void populateCatalogTable() {
+//    DefaultTableModel model = (DefaultTableModel) tblTicketCatalog.getModel(); // 假设表格变量为 catalogTable
+//    model.setRowCount(0); // 清空表格
+//
+//    // 示例数据
+//    Object[][] data = {
+//        {"Item 1", 10.0, 100},
+//        {"Item 2", 20.0, 50},
+//        {"Item 3", 15.5, 30}
+//    };
+//
+//    for (Object[] row : data) {
+//        model.addRow(row);
+//    }
+//}
 }

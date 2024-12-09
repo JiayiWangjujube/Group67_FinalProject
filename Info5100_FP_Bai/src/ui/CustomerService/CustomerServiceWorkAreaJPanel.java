@@ -93,7 +93,7 @@ public class CustomerServiceWorkAreaJPanel extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        ManageTicekRefundJPanel manageRefundPanel = new ManageTicekRefundJPanel(userProcessContainer);
+        ManageTicekRefundJPanel manageRefundPanel = new ManageTicekRefundJPanel(userProcessContainer, account, organization, enterprise);
         userProcessContainer.add("ManageTicketRefundJPanel", manageRefundPanel);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
         layout.next(userProcessContainer);

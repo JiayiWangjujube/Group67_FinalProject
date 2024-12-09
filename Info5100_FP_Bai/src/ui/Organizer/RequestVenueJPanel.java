@@ -16,6 +16,7 @@ import Business.Organization.VenueOperationsOrganization;
 import Business.UserAccount.UserAccount;
 import Business.WorkQueue.VenueWorkRequest;
 import Business.WorkQueue.WorkRequest;
+import ui.Venue.VenueManagementJPanel;
 
 
 /**
@@ -177,66 +178,39 @@ public class RequestVenueJPanel extends javax.swing.JPanel {
 
     private void btnSendRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendRequestActionPerformed
         // TODO add your handling code here:
-         //try {
-            // 获取用户输入
-            String venue = txtVenue.getText().trim();
-            String maxCapacityStr = txtMaxCapacity.getText().trim();
-            if (venue.isEmpty() || maxCapacityStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Venue and Maximum Capacity are required.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        String venue = txtVenue.getText().trim();
+        String maxCapacityStr = txtMaxCapacity.getText().trim();
+        if (venue.isEmpty() || maxCapacityStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Venue and Maximum Capacity are required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-            int maxCapacity;
-            try {
-                maxCapacity = Integer.parseInt(maxCapacityStr);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Maximum Capacity must be a number.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        int maxCapacity;
+        try {
+            maxCapacity = Integer.parseInt(maxCapacityStr);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Maximum Capacity must be a number.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-            // 创建新的 VenueWorkRequest
-            VenueWorkRequest request = new VenueWorkRequest();
-            request.setEventName(selectedEvent.getEventName());
-            request.setEventDate(selectedEvent.getEventDate());
-            request.setEventTime(selectedEvent.getEventTime());
-            request.setVenue(venue);
-            request.setMaxcap(maxCapacity);
-            request.setSender(userAccount);
-            request.setStatus("Pending");
+        Object[] workRequest = new Object[6];
+        workRequest[0] = txtEventName.getText(); // Performance Name
+        workRequest[1] = txtEventDate.getText();   // Sender
+        workRequest[2] = txtEventTime.getText();       // Receiver
+        workRequest[3] = maxCapacity;                   // Status
+        workRequest[4] = venue;                          // Remark
+        workRequest[5] = txtSpecialRequest.getText(); // Suggested Price
 
-            // 将请求添加到 ConcertPlanningOrganization 的 WorkQueue 中        
-//        if (organization instanceof ConcertPlanningOrganization concertPlanningOrg) {
-//            concertPlanningOrg.getWorkQueue().getVenueWorkRequestList().add(request);
-//            JOptionPane.showMessageDialog(this, "Venue request sent successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-//        } else {
-//            JOptionPane.showMessageDialog(this, "Error: Invalid organization type.", "Error", JOptionPane.ERROR_MESSAGE);
-//        }
+        // 这里需要调用 TicketingAgent 的 UI 刷新方法，模拟将 WorkRequest 发送到对方的队列
+        VenueManagementJPanel.addWorkRequest(workRequest);
+        JOptionPane.showMessageDialog(this, "Request sent!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-            Organization targetOrg = null;
-            for (Organization org : enterprise.getOrganizationDirectory().getOrganizationList()) {
-                if (org instanceof VenueOperationsOrganization) {
-                    targetOrg = org; // 找到目标组织
-                    break;
-                }
-            }
-            if (targetOrg != null) {
-                targetOrg.getWorkQueue().getWorkRequestList().add(request);
-                userAccount.getWorkQueue().getWorkRequestList().add(request);
-            } else {
-                System.out.println("Error: No VenueOperationsOrganization found in the enterprise.");
-                throw new IllegalArgumentException("VenueOperationsOrganization not found.");
-            }
-            
-            JOptionPane.showMessageDialog(null, "Request message sent");
-
-            txtVenue.setText("");
-            txtMaxCapacity.setText("");
-            txtSpecialRequest.setText("");
-
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(this, "An error occurred while sending the venue request.", "Error", JOptionPane.ERROR_MESSAGE);
-//        }
+        txtEventName.setText("");
+        txtEventDate.setText("");
+        txtEventTime.setText("");
+        txtMaxCapacity.setText("");
+        txtVenue.setText("");
+        txtSpecialRequest.setText("");
     }//GEN-LAST:event_btnSendRequestActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed

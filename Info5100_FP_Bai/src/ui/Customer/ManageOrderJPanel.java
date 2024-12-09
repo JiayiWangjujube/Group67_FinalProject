@@ -5,9 +5,13 @@
 package ui.Customer;
 
 import Business.Enterprise.Enterprise;
+import Business.Organization.Organization;
 import Business.UserAccount.UserAccount;
 import java.awt.CardLayout;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,6 +22,7 @@ public class ManageOrderJPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
     private Enterprise enterprise;
     private UserAccount customer;
+    private Organization organization;
     /**
      * Creates new form ManageOrderJPanel
      */
@@ -26,7 +31,18 @@ public class ManageOrderJPanel extends javax.swing.JPanel {
         this.userProcessContainer = userProcessContainer;
         this.enterprise = enterprise;
         this.customer = customer;
+        populateTable();
     }
+    private void populateTable() {
+    DefaultTableModel model = (DefaultTableModel) tblCart.getModel();
+    model.setRowCount(0);
+
+    // 获取已结算数据
+    List<Object[]> checkedOutItems = BuyTicketJPanel.getCheckedOutItems();
+    for (Object[] item : checkedOutItems) {
+        model.addRow(item);
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -37,16 +53,10 @@ public class ManageOrderJPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        cmbOrder = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblCart = new javax.swing.JTable();
         btnRemoveOrderItem = new javax.swing.JButton();
         backJButton = new javax.swing.JButton();
-
-        jLabel1.setText("My Orders:");
-
-        cmbOrder.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         tblCart.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -92,11 +102,7 @@ public class ManageOrderJPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(btnRemoveOrderItem)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(cmbOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 599, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(backJButton)
                         .addGap(533, 533, 533)))
@@ -107,11 +113,7 @@ public class ManageOrderJPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(backJButton)
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(cmbOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(78, 78, 78)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(btnRemoveOrderItem)
@@ -121,8 +123,27 @@ public class ManageOrderJPanel extends javax.swing.JPanel {
 
     private void btnRemoveOrderItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveOrderItemActionPerformed
 
-        
+    int selectedRow = tblCart.getSelectedRow();
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(this, "Please select an item to cancel", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
+    DefaultTableModel model = (DefaultTableModel) tblCart.getModel();
+
+    // 构造 eventDetails 数据
+    Object[] eventDetails = new Object[5]; // 必须和 CancelTicketRequestJPanel 的表格列数一致
+    eventDetails[0] = model.getValueAt(selectedRow, 0); // Event Name
+    eventDetails[1] = "Pending Cancel Request";         // Message 默认值
+    eventDetails[2] = "Customer Service";              // Receiver 默认值
+    eventDetails[3] = "Pending";                       // Status 默认值
+    eventDetails[4] = "";                              // Result 默认值
+
+    // 跳转到 CancelTicketRequestJPanel
+    CancelTicketRequestJPanel ctrjp = new CancelTicketRequestJPanel(userProcessContainer, enterprise, customer, organization, eventDetails);
+    userProcessContainer.add("CancelTicketRequestJPanel", ctrjp);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.next(userProcessContainer);
     }//GEN-LAST:event_btnRemoveOrderItemActionPerformed
 
     private void backJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backJButtonActionPerformed
@@ -136,8 +157,6 @@ public class ManageOrderJPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backJButton;
     private javax.swing.JButton btnRemoveOrderItem;
-    private javax.swing.JComboBox<String> cmbOrder;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblCart;
     // End of variables declaration//GEN-END:variables

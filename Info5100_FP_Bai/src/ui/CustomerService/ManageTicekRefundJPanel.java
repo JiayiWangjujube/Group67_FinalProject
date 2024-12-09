@@ -4,6 +4,10 @@
  */
 package ui.CustomerService;
 
+import Business.Enterprise.Enterprise;
+import Business.Organization.Organization;
+import Business.UserAccount.UserAccount;
+import Business.WorkQueue.WorkRequest;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -16,28 +20,56 @@ import ui.TicketingAgentRole.*;
  */
 public class ManageTicekRefundJPanel extends javax.swing.JPanel {
     private JPanel userProcessContainer;
-
+    private Organization organization;
+    private UserAccount userAccount;
+    private Enterprise enterprise;
     /**
      * Creates new form ManageTicketingJPanel
      */
-    public ManageTicekRefundJPanel(JPanel userProcessContainer) {
+    public ManageTicekRefundJPanel(JPanel userProcessContainer, UserAccount userAccount, Organization organization, Enterprise enterprise) {
         initComponents();
         this.userProcessContainer = userProcessContainer;
-        populateTable();
+        this.userAccount = userAccount;
+        this.organization = organization;
+        this.enterprise = enterprise;
+    }
+    public ManageTicekRefundJPanel(JPanel userProcessContainer, Organization organization, UserAccount userAccount) {
+    initComponents();
+    this.userProcessContainer = userProcessContainer;
+    this.organization = organization;
+    this.userAccount = userAccount;
+    populateRequestTable();
+    refreshRequestTable();
+}
+    
+    private void populateRequestTable() {
+    DefaultTableModel model = (DefaultTableModel) workRequestJTable.getModel();
+    model.setRowCount(0);
+
+    for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+        Object[] row = new Object[5];
+        row[0] = request instanceof WorkRequest ? ((WorkRequest) request).getEventName() : "Unknown Event";
+        row[1] = request.getMessage();
+        row[2] = request.getReceiver() != null ? request.getReceiver().getUsername() : "Unassigned";
+        row[3] = request.getStatus();
+        row[4] = request instanceof WorkRequest ? ((WorkRequest) request).getResult() : "No Result";
+        model.addRow(row);
     }
     
-    private void populateTable() {
+    
+}
+    
+    private void refreshRequestTable() {
         DefaultTableModel model = (DefaultTableModel) workRequestJTable.getModel();
         model.setRowCount(0);
 
-        
-        Object[][] data = {
-            {"Concert A", "Customer 1", "", "Pending", ""},
-            {"Concert B", "Customer 2", "", "Pending", ""},
-            {"Concert C", "Customer 3", "", "Pending", ""}
-        };
-
-        for (Object[] row : data) {
+        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+            Object[] row = new Object[5];
+            row[0] = request.getEventName(); // 假设 WorkRequest 中有 getEventName 方法
+            row[1] = request.getMessage();
+            row[2] = request.getReceiver() != null ? request.getReceiver().getUsername() : "Unassigned";
+            row[3] = request.getStatus();
+            row[4] = request.getResult() != null ? request.getResult() : "No Result";
             model.addRow(row);
         }
     }
@@ -158,14 +190,22 @@ public class ManageTicekRefundJPanel extends javax.swing.JPanel {
 
        int selectedRow = workRequestJTable.getSelectedRow();
 
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a request to assign.");
-            return;
-        }
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(null, "Please select a request to assign.");
+        return;
+    }
 
-        DefaultTableModel model = (DefaultTableModel) workRequestJTable.getModel();
-        model.setValueAt("Assigned to me", selectedRow, 2); 
-        model.setValueAt("Pending", selectedRow, 3);       
+    WorkRequest request = organization.getWorkQueue().getWorkRequestList().get(selectedRow);
+    if (request.getReceiver() != null) {
+        JOptionPane.showMessageDialog(null, "This request is already assigned.");
+        return;
+    }
+
+    request.setReceiver(userAccount);
+    request.setStatus("Pending");
+
+    JOptionPane.showMessageDialog(this, "Request assigned successfully!");
+    populateRequestTable();     
 
     }//GEN-LAST:event_assignJButtonActionPerformed
 
@@ -173,27 +213,27 @@ public class ManageTicekRefundJPanel extends javax.swing.JPanel {
 
        int selectedRow = workRequestJTable.getSelectedRow();
 
-        if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(null, "Please select a request to process.");
-            return;
-        }
+    if (selectedRow < 0) {
+        JOptionPane.showMessageDialog(null, "Please select a request to process.");
+        return;
+    }
 
-        String status = (String) workRequestJTable.getValueAt(selectedRow, 3);
-        if (!"Pending".equals(status)) {
-            JOptionPane.showMessageDialog(null, "Only pending requests can be processed.");
-            return;
-        }
+    WorkRequest request = organization.getWorkQueue().getWorkRequestList().get(selectedRow);
 
-        
-        ProcessTicketRefundJPanel processPanel = new ProcessTicketRefundJPanel(userProcessContainer, selectedRow, (DefaultTableModel) workRequestJTable.getModel());
-        userProcessContainer.add("ProcessTicketRefundJPanel", processPanel);
-        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
-        layout.next(userProcessContainer);
+    if (!"Pending".equals(request.getStatus())) {
+        JOptionPane.showMessageDialog(null, "Only pending requests can be processed.");
+        return;
+    }
+
+    ProcessTicketRefundJPanel processPanel = new ProcessTicketRefundJPanel(userProcessContainer, request);
+    userProcessContainer.add("ProcessTicketRefundJPanel", processPanel);
+    CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+    layout.next(userProcessContainer);
 
     }//GEN-LAST:event_processJButtonActionPerformed
 
     private void refreshJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJButtonActionPerformed
-        populateTable();
+    refreshRequestTable();
     }//GEN-LAST:event_refreshJButtonActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed

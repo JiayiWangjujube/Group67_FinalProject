@@ -4,6 +4,8 @@
  */
 package ui.CustomerService;
 
+import Business.WorkQueue.WorkRequest;
+import com.sun.net.httpserver.Request;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,26 +20,26 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
      private JPanel userProcessContainer;
      private int selectedRow;
      private DefaultTableModel model;
+     private WorkRequest request;
+     
 
 
     /**
      * Creates new form ProcessTicketCheckJPanel
      */
-    public ProcessTicketRefundJPanel(JPanel userProcessContainer,int selectedRow, DefaultTableModel model) {
+    public ProcessTicketRefundJPanel(JPanel userProcessContainer, WorkRequest request) {
         initComponents();
         this.userProcessContainer = userProcessContainer;
         this.selectedRow = selectedRow;
         this.model = model;
+        this.request = request;
         
-        jTextField1.setEnabled(false);
-        populateData();
+
+      
 
     }
     
-     private void populateData() {
-        String performanceName = (String) model.getValueAt(selectedRow, 0);
-        jLabel1.setText("Check Result for: " + performanceName);
-    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,11 +51,9 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         submitJButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         backJButton = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtMessage = new javax.swing.JTextField();
 
         submitJButton.setText("Submit Result");
         submitJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -62,8 +62,6 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("Check Result");
-
         backJButton.setText("Back");
         backJButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -71,16 +69,13 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
         jLabel2.setText("Remark");
 
-        jTextField1.setText("jTextField1");
+        txtMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMessageActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -90,13 +85,9 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
                 .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(51, 51, 51)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel2)
+                        .addGap(84, 84, 84)
+                        .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(backJButton)
@@ -107,14 +98,10 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(82, 82, 82)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(62, 62, 62)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(submitJButton)
@@ -124,14 +111,19 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitJButtonActionPerformed
-        String result = (String) jComboBox1.getSelectedItem();
-        String remark = "Reject".equals(result) ? jTextField1.getText() : "";
+        String message = txtMessage.getText().trim();
 
-        model.setValueAt(result, selectedRow, 3); // 更新状态
-        model.setValueAt(remark, selectedRow, 4); // 更新备注
+        if (message.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a message!", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        JOptionPane.showMessageDialog(null, "Result submitted successfully!");
-        
+        // 更新 WorkRequest 的状态和备注
+        request.setStatus("Processed");
+        request.setResult(message);
+
+        JOptionPane.showMessageDialog(this, "Result submitted successfully!");
+
         // 返回上一页
         userProcessContainer.remove(this);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
@@ -146,19 +138,15 @@ public class ProcessTicketRefundJPanel extends javax.swing.JPanel {
         layout.previous(userProcessContainer);
     }//GEN-LAST:event_backJButtonActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void txtMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMessageActionPerformed
         // TODO add your handling code here:
-        String result = (String) jComboBox1.getSelectedItem();
-        jTextField1.setEnabled("Reject".equals(result));
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_txtMessageActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backJButton;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JButton submitJButton;
+    private javax.swing.JTextField txtMessage;
     // End of variables declaration//GEN-END:variables
 }

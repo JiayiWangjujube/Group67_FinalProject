@@ -10,11 +10,15 @@ import Business.Organization.Organization;
 import Business.UserAccount.UserAccount;
 import Business.WorkQueue.VenueWorkRequest;
 import Business.WorkQueue.WorkRequest;
+import Model.Event;
 import java.awt.CardLayout;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
-
+import ui.Security.AssignSecurityJPanel;
+import static ui.Organizer.EventManagementJPanel.eventList;
 /**
  *
  * @author zhangdi
@@ -24,7 +28,7 @@ public class VenueManagementJPanel extends javax.swing.JPanel {
     private Enterprise enterprise;
     private UserAccount userAccount;
     private Organization organization;
-
+    public static List<Object[]> workRequestQueue = new ArrayList<>();
 
     /**
      * Creates new form VenueManagementJPanel
@@ -37,6 +41,10 @@ public class VenueManagementJPanel extends javax.swing.JPanel {
         this.organization=organization;
 
         populateTable();
+    }
+    
+    public static void addWorkRequest(Object[] workRequest) {
+        workRequestQueue.add(workRequest);
     }
 
     /**
@@ -69,13 +77,13 @@ public class VenueManagementJPanel extends javax.swing.JPanel {
 
         WorkRequestJTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Event Name", "Date", "Time", "Organizer", "Venue", "Status", "Assign To"
+                "Event Name", "Date", "Venue", "Status", "Organizer", "Assign To"
             }
         ));
         jScrollPane1.setViewportView(WorkRequestJTable);
@@ -142,6 +150,9 @@ public class VenueManagementJPanel extends javax.swing.JPanel {
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
+        userProcessContainer.remove(this);
+        CardLayout layout = (CardLayout) userProcessContainer.getLayout();
+        layout.previous(userProcessContainer);
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAssignActionPerformed
@@ -151,10 +162,16 @@ public class VenueManagementJPanel extends javax.swing.JPanel {
         if (selectedRow < 0){
             return;
         }
-        
         WorkRequest request = (WorkRequest)WorkRequestJTable.getValueAt(selectedRow, 0);
-        request.setReceiver(userAccount);
-        request.setStatus("Pending");
+        
+         if (request.getStatus().equals("Pending")) {
+            request.setReceiver(userAccount);
+            request.setStatus("Assigned");
+            JOptionPane.showMessageDialog(this, "Request successfully assigned to you.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Request is already assigned or processed.", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+      
         populateTable();
     }//GEN-LAST:event_btnAssignActionPerformed
 
@@ -168,9 +185,7 @@ public class VenueManagementJPanel extends javax.swing.JPanel {
         }
         
         VenueWorkRequest request = (VenueWorkRequest)WorkRequestJTable.getValueAt(selectedRow, 0);
-     
         request.setStatus("Processing");
-        
         ProcessRequestJPanel processWorkRequestJPanel = new ProcessRequestJPanel(userProcessContainer, request);
         userProcessContainer.add("ProcessRequestJPanel", processWorkRequestJPanel);
         CardLayout layout = (CardLayout) userProcessContainer.getLayout();
@@ -178,25 +193,52 @@ public class VenueManagementJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnProcessRequestActionPerformed
     private void populateTable() {
         DefaultTableModel model = (DefaultTableModel) WorkRequestJTable.getModel();
-        model.setRowCount(0); // 清空表格内容
+        model.setRowCount(0); 
 
       if (organization instanceof ConcertPlanningOrganization concertPlanningOrg) {
         List<VenueWorkRequest> requestList = concertPlanningOrg.getWorkQueue().getVenueWorkRequestList();
 
         for (VenueWorkRequest request : requestList) {
-            Object[] row = new Object[7]; // 表格有 7 列
+
+//            if (!"Pending".equals(request.getStatus())) {
+//                continue; 
+//            }
+
+            // 构建表格行数据，只包含需要的字段
+            Object[] row = new Object[5]; // 表格有 5 列
             row[0] = request.getEventName();   // 事件名称
             row[1] = request.getEventDate();   // 日期
-            row[2] = request.getEventTime();   // 时间
-            row[3] = request.getSender() == null ? "Unknown" : request.getSender().getEmployee().getName(); // 发送者姓名
-            row[4] = request.getVenue();       // 场地
-            row[5] = request.getStatus();      // 状态
-            row[6] = request.getReceiver() == null ? "Unassigned" : request.getReceiver().getEmployee().getName(); // 处理者姓名
+            row[2] = request.getVenue();       // 场地
+            row[3] = request.getStatus();      // 状态
+            row[4] = request.getSender() == null ? "Unknown" : request.getSender().getUsername(); // 组织者用户名
+
+ 
             model.addRow(row);
         }
     } else {
         System.out.println("Error: Invalid organization type.");
     }
+    }
+    private void sendWorkRequest(int selectedRow) {
+        // 获取选中的事件
+        Event selectedEvent = eventList.get(selectedRow);
+        if (selectedEvent == null) {
+            JOptionPane.showMessageDialog(this, "Error: Unable to retrieve event details.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 构建 WorkRequest 信息
+        Object[] workRequest = new Object[6];
+        workRequest[0] = selectedEvent.getEventName(); // Performance Name
+        workRequest[1] = selectedEvent.getEventDate();
+        workRequest[2] = selectedEvent.getVenue();
+        workRequest[3] = userAccount.getUsername();   // Sender
+        workRequest[4] = "Pending";               
+        workRequest[5] = "Unassigned";                  // Status
+
+        // 调用目标面板的方法，将 WorkRequest 发送到对方的队列
+       AssignSecurityJPanel.addWorkRequest(workRequest); // 假设 Security 面板会处理请求
+       JOptionPane.showMessageDialog(this, "Request sent and marked as Unassigned.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
